@@ -28,541 +28,534 @@ class LandscapeVideo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return PopScope(
-      canPop: true,
-      onPopInvoked: (val) {
-        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-        Get.delete<LandscapeController>();
-      },
-      child: Obx(
-        () => GestureDetector(
-          onTap: () {
-            if (!_controller.lock.value) {
-              _controller.isVisible.value = !_controller.isVisible.value;
-              Future.delayed(const Duration(seconds: 10), () {
-                _controller.isVisible.value = false;
-              });
-            }
-          },
-          child: controller.isInitialized.value
-              ? Stack(
-                  // fit: StackFit.expand,
-                  // clipBehavior: Clip.antiAlias,
-                  children: [
-                    VideoPlayer(controller.controller), //Video Player
-                    Obx(
-                      () => controller.caption.isNotEmpty
-                          ? ClosedCaption(
-                              text: controller.currentSubtitle?.data,
-                              textStyle: TextStyle(
-                                fontSize: 15,
-                                color: textColor ?? Colors.white,
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                    ), //Captions
-                    Visibility(
-                      visible: _controller.isVisible.value,
-                      // visible: true,
-                      child: Container(
-                        decoration: const BoxDecoration(color: Colors.black45),
-                        width: double.infinity,
-                        height: double.infinity,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: 2,
-                              top: 2,
-                              child: TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Get.delete<LandscapeController>();
-                                },
-                                child: SvgPicture.asset(
-                                  "assets/icons/back_icon.svg",
-                                  package: "youtube_video_player",
-                                  color: textColor,
-                                ),
+    return Obx(
+         () => GestureDetector(
+        onTap: () {
+          if (!_controller.lock.value) {
+            _controller.isVisible.value = !_controller.isVisible.value;
+            Future.delayed(const Duration(seconds: 10), () {
+              _controller.isVisible.value = false;
+            });
+          }
+        },
+        child: controller.isInitialized.value
+            ? Stack(
+                // fit: StackFit.expand,
+                // clipBehavior: Clip.antiAlias,
+                children: [
+                  VideoPlayer(controller.controller), //Video Player
+                  Obx(
+                    () => controller.caption.isNotEmpty
+                        ? ClosedCaption(
+                            text: controller.currentSubtitle?.data,
+                            textStyle: TextStyle(
+                              fontSize: 15,
+                              color: textColor ?? Colors.white,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ), //Captions
+                  Visibility(
+                    visible: _controller.isVisible.value,
+                    // visible: true,
+                    child: Container(
+                      decoration: const BoxDecoration(color: Colors.black45),
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: 2,
+                            top: 2,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Get.delete<LandscapeController>();
+                              },
+                              child: SvgPicture.asset(
+                                "assets/icons/back_icon.svg",
+                                package: "youtube_video_player",
+                                color: textColor,
                               ),
                             ),
-                            Positioned(
-                                left: 60,
-                                top: 7,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.8,
-                                      child: Text(
-                                        controller.video!.title,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: width >= 600 ? 15 : 12),
+                          ),
+                          Positioned(
+                              left: 60,
+                              top: 7,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.8,
+                                    child: Text(
+                                      controller.video!.title,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontSize: width >= 600 ? 15 : 12),
+                                    ),
+                                  ),
+                                  Text(
+                                    controller.video!.author,
+                                    style: TextStyle(
+                                        color: textColor ?? Colors.white54),
+                                  )
+                                ],
+                              )),
+                          Center(
+                            child: SizedBox(
+                              width: 250,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  TextButton(
+                                    child: SvgPicture.asset(
+                                      "assets/icons/10rev.svg",
+                                      width: 30,
+                                      height: 30,
+                                      color: controlsColor,
+                                      package: "youtube_video_player",
+                                    ),
+                                    onPressed: () {
+                                      controller.controller.seekTo(controller
+                                              .controller.value.position -
+                                          const Duration(seconds: 10));
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: SvgPicture.asset(
+                                      controller.isPlaying.value
+                                          ? "assets/icons/pause_video.svg"
+                                          : "assets/icons/play_video.svg",
+                                      width: 48,
+                                      color: controlsColor,
+                                      package: "youtube_video_player",
+                                    ),
+                                    onPressed: () {
+                                      controller.isPlaying.value =
+                                          !controller.isPlaying.value;
+                                      controller.controller.value.isPlaying
+                                          ? controller.controller.pause()
+                                          : controller.controller.play();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: SvgPicture.asset(
+                                        "assets/icons/10for.svg",
+                                        width: 30,
+                                        height: 30,
+                                        color: controlsColor,
+                                        package: "youtube_video_player"),
+                                    onPressed: () {
+                                      controller.controller.seekTo(controller
+                                              .controller.value.position +
+                                          const Duration(seconds: 10));
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ), //Controls
+                          Positioned(
+                            bottom: 100,
+                            left: 30,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Visibility(
+                                  visible: controller.brightVisible.value,
+                                  child: RotatedBox(
+                                    quarterTurns: -1,
+                                    child: SizedBox(
+                                      width: 80,
+                                      // margin: EdgeInsets.only(
+                                      //     top: 30,
+                                      //     bottom: 30,
+                                      //     left: 20,
+                                      //     right: 18),
+                                      child: SliderTheme(
+                                        data: SliderThemeData(
+                                            trackHeight: 2,
+                                            thumbShape:
+                                                const RoundSliderThumbShape(
+                                                    enabledThumbRadius: 6),
+                                            overlayShape:
+                                                const RoundSliderOverlayShape(
+                                                    overlayRadius: 1),
+                                            thumbColor:
+                                                primaryColor ?? Colors.white,
+                                            activeTrackColor:
+                                                primaryColor ?? Colors.white,
+                                            inactiveTrackColor:
+                                                controlsColor ?? Colors.grey),
+                                        child: Slider(
+                                          value:
+                                              controller.setBrightness.value,
+                                          min: 0.0,
+                                          max: 1.0,
+                                          // divisions: duration.value.inSeconds.round(),
+                                          onChanged: (double newValue) {
+                                            // position.value =
+                                            // Duration(seconds: newValue.toInt());
+                                            controller.setBrightness.value =
+                                                newValue;
+                                            ScreenBrightness()
+                                                .setScreenBrightness(
+                                                    newValue);
+                                          },
+                                          mouseCursor:
+                                              MouseCursor.uncontrolled,
+                                        ),
                                       ),
                                     ),
-                                    Text(
-                                      controller.video!.author,
-                                      style: TextStyle(
-                                          color: textColor ?? Colors.white54),
-                                    )
-                                  ],
-                                )),
-                            Center(
-                              child: SizedBox(
-                                width: 250,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    TextButton(
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 55,
+                                  height: 55,
+                                  child: TextButton(
+                                      onPressed: () {
+                                        controller.brightVisible.value =
+                                            !controller.brightVisible.value;
+                                        Future.delayed(
+                                            const Duration(seconds: 5),
+                                            () => controller
+                                                .brightVisible.value = false);
+                                      },
                                       child: SvgPicture.asset(
-                                        "assets/icons/10rev.svg",
+                                        "assets/icons/brightness.svg",
+                                        package: "youtube_video_player",
+                                        color: controlsColor,
+                                        height: 20,
+                                        width: 20,
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 100,
+                            right: 30,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Visibility(
+                                  visible: controller.volVisible.value,
+                                  child: RotatedBox(
+                                    quarterTurns: -1,
+                                    child: SizedBox(
+                                      width: 80,
+                                      // margin: EdgeInsets.only(
+                                      //     top: 30,
+                                      //     bottom: 30,
+                                      //     left: 20,
+                                      //     right: 18),
+                                      child: SliderTheme(
+                                        data: SliderThemeData(
+                                            trackHeight: 2,
+                                            thumbShape: RoundSliderThumbShape(
+                                                enabledThumbRadius: 6),
+                                            overlayShape:
+                                                RoundSliderOverlayShape(
+                                                    overlayRadius: 1),
+                                            thumbColor:
+                                                primaryColor ?? Colors.white,
+                                            activeTrackColor:
+                                                primaryColor ?? Colors.white,
+                                            inactiveTrackColor:
+                                                controlsColor ?? Colors.grey),
+                                        child: Slider(
+                                          value:
+                                              controller.setVolumeValue.value,
+                                          min: 0.0,
+                                          max: 1.0,
+                                          // divisions: duration.value.inSeconds.round(),
+                                          onChanged: (double newValue) {
+                                            // position.value =
+                                            // Duration(seconds: newValue.toInt());
+                                            controller.setVolumeValue.value =
+                                                newValue;
+                                            controller.setVolumeValue.value ==
+                                                    0
+                                                ? controller.isMute.value =
+                                                    true
+                                                : controller.isMute.value =
+                                                    false;
+                                            controller.setVolumeValue.value =
+                                                newValue;
+                                            controller.controller
+                                                .setVolume(newValue);
+                                          },
+                                          mouseCursor:
+                                              MouseCursor.uncontrolled,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 55,
+                                  height: 55,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      controller.volVisible.value =
+                                          !controller.volVisible.value;
+                                      Future.delayed(
+                                          const Duration(seconds: 5),
+                                          () => controller.volVisible.value =
+                                              false);
+                                    },
+                                    child: Obx(() => !controller.isMute.value
+                                        ? SvgPicture.asset(
+                                            "assets/icons/volume.svg",
+                                            package: "youtube_video_player",
+                                            color: controlsColor,
+                                            width: 20,
+                                            height: 20,
+                                          )
+                                        : SvgPicture.asset(
+                                            "assets/icons/mute.svg",
+                                            package: "youtube_video_player",
+                                            color: controlsColor,
+                                            width: 20,
+                                            height: 20,
+                                          )),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            alignment: Alignment.bottomCenter,
+                            // height: 100,
+                            width: double.infinity,
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                  top: 45, bottom: 30, left: 20, right: 18),
+                              // child: SliderTheme(
+                              //   data: SliderThemeData(
+                              //     trackHeight: 1,
+                              //     thumbShape: RoundSliderThumbShape(
+                              //         enabledThumbRadius: 3),
+                              //     overlayShape: RoundSliderOverlayShape(
+                              //         overlayRadius: 4),
+                              //     thumbColor: primaryColor,
+                              //     activeTrackColor: primaryColor,
+                              //     inactiveTrackColor: Colors.grey,
+                              //     showValueIndicator:
+                              //         ShowValueIndicator.always,
+                              //   ),
+                              //   child: Slider(
+                              //     label: controller.formatDuration(
+                              //         controller.position.value),
+                              //     value: controller.position.value.inSeconds
+                              //         .toDouble(),
+                              //     min: 0.0,
+                              //     max: controller.duration.value.inSeconds
+                              //         .toDouble(),
+                              //     // divisions: duration.value.inSeconds.round(),
+                              //     onChanged: (double newValue) {
+                              //       // position.value =
+                              //       // Duration(seconds: newValue.toInt());
+                              //       controller.controller.seekTo(
+                              //           Duration(seconds: newValue.toInt()));
+                              //     },
+                              //     mouseCursor: MouseCursor.defer,
+                              //   ),
+                              // ),
+                              child: Obx(
+                                () => ProgressBar(
+                                  // key: controller.mywidgetkey.value,
+                                  barHeight: 2,
+                                  baseBarColor: Colors.white,
+                                  bufferedBarColor: Colors.grey[300],
+                                  progressBarColor: primaryColor,
+                                  thumbColor: primaryColor,
+                                  thumbRadius: 5,
+                                  progress: controller.position.value,
+                                  total: controller.controller.value.duration,
+                                  // buffered: controller
+                                  //     .durationRangeToDuration(controller
+                                  //         .controller.value.buffered),
+                                  onSeek: (value) =>
+                                      controller.controller.seekTo(value),
+                                  timeLabelTextStyle: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: textColor,
+                                      fontSize: 6),
+                                  barCapShape: BarCapShape.round,
+                                  timeLabelPadding: 5,
+                                  timeLabelType: TimeLabelType.remainingTime,
+                                ),
+                              ),
+                            ), //Progress Bar
+                          ),
+                          // Container(
+                          //     padding: EdgeInsets.only(
+                          //         top: 420, left: 25, right: 25),
+                          //     //Duration
+                          //     child: Row(
+                          //       mainAxisAlignment:
+                          //           MainAxisAlignmentaceBetween,
+                          //       children: [
+                          //         RichText(
+                          //           text: TextSpan(
+                          //             text: controller.formatDuration(
+                          //                 controller.position.value),
+                          //             style: const TextStyle(
+                          //               fontSize: 10.0,
+                          //               color: Colors.white,
+                          //               decoration: TextDecoration.none,
+                          //             ),
+                          //           ),
+                          //         ),
+                          //         Text(
+                          //           controller.formatDuration(
+                          //               controller.duration.value),
+                          //           style: const TextStyle(
+                          //             fontSize: 10.0,
+                          //             color: Colors.white,
+                          //             decoration: TextDecoration.none,
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     )),
+                          //Bottom Bar Settings and Full Screen
+                          Positioned(
+                              top: 2,
+                              right: 10,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  TextButton(
+                                      onPressed: () {
+                                        _controller.lock.value =
+                                            !_controller.lock.value;
+                                        _controller.isVisible.value = false;
+                                      },
+                                      style: TextButton.styleFrom(
+                                        fixedSize: const Size(30, 30),
+                                        minimumSize: const Size(30, 30),
+                                        maximumSize: const Size(30, 30),
+                                      ),
+                                      child: SvgPicture.asset(
+                                        "assets/icons/lock.svg",
                                         width: 30,
                                         height: 30,
                                         color: controlsColor,
                                         package: "youtube_video_player",
-                                      ),
-                                      onPressed: () {
-                                        controller.controller.seekTo(controller
-                                                .controller.value.position -
-                                            const Duration(seconds: 10));
-                                      },
+                                      )),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    style: TextButton.styleFrom(
+                                      fixedSize: const Size(35, 35),
+                                      minimumSize: const Size(35, 35),
+                                      maximumSize: const Size(35, 35),
                                     ),
-                                    TextButton(
-                                      child: SvgPicture.asset(
-                                        controller.isPlaying.value
-                                            ? "assets/icons/pause_video.svg"
-                                            : "assets/icons/play_video.svg",
-                                        width: 48,
-                                        color: controlsColor,
-                                        package: "youtube_video_player",
-                                      ),
-                                      onPressed: () {
-                                        controller.isPlaying.value =
-                                            !controller.isPlaying.value;
-                                        controller.controller.value.isPlaying
-                                            ? controller.controller.pause()
-                                            : controller.controller.play();
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: SvgPicture.asset(
-                                          "assets/icons/10for.svg",
-                                          width: 30,
-                                          height: 30,
-                                          color: controlsColor,
-                                          package: "youtube_video_player"),
-                                      onPressed: () {
-                                        controller.controller.seekTo(controller
-                                                .controller.value.position +
-                                            const Duration(seconds: 10));
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ), //Controls
-                            Positioned(
-                              bottom: 100,
-                              left: 30,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Visibility(
-                                    visible: controller.brightVisible.value,
-                                    child: RotatedBox(
-                                      quarterTurns: -1,
-                                      child: SizedBox(
-                                        width: 80,
-                                        // margin: EdgeInsets.only(
-                                        //     top: 30,
-                                        //     bottom: 30,
-                                        //     left: 20,
-                                        //     right: 18),
-                                        child: SliderTheme(
-                                          data: SliderThemeData(
-                                              trackHeight: 2,
-                                              thumbShape:
-                                                  const RoundSliderThumbShape(
-                                                      enabledThumbRadius: 6),
-                                              overlayShape:
-                                                  const RoundSliderOverlayShape(
-                                                      overlayRadius: 1),
-                                              thumbColor:
-                                                  primaryColor ?? Colors.white,
-                                              activeTrackColor:
-                                                  primaryColor ?? Colors.white,
-                                              inactiveTrackColor:
-                                                  controlsColor ?? Colors.grey),
-                                          child: Slider(
-                                            value:
-                                                controller.setBrightness.value,
-                                            min: 0.0,
-                                            max: 1.0,
-                                            // divisions: duration.value.inSeconds.round(),
-                                            onChanged: (double newValue) {
-                                              // position.value =
-                                              // Duration(seconds: newValue.toInt());
-                                              controller.setBrightness.value =
-                                                  newValue;
-                                              ScreenBrightness()
-                                                  .setScreenBrightness(
-                                                      newValue);
-                                            },
-                                            mouseCursor:
-                                                MouseCursor.uncontrolled,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 55,
-                                    height: 55,
-                                    child: TextButton(
-                                        onPressed: () {
-                                          controller.brightVisible.value =
-                                              !controller.brightVisible.value;
-                                          Future.delayed(
-                                              const Duration(seconds: 5),
-                                              () => controller
-                                                  .brightVisible.value = false);
-                                        },
-                                        child: SvgPicture.asset(
-                                          "assets/icons/brightness.svg",
-                                          package: "youtube_video_player",
-                                          color: controlsColor,
-                                          height: 20,
-                                          width: 20,
-                                        )),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 100,
-                              right: 30,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Visibility(
-                                    visible: controller.volVisible.value,
-                                    child: RotatedBox(
-                                      quarterTurns: -1,
-                                      child: SizedBox(
-                                        width: 80,
-                                        // margin: EdgeInsets.only(
-                                        //     top: 30,
-                                        //     bottom: 30,
-                                        //     left: 20,
-                                        //     right: 18),
-                                        child: SliderTheme(
-                                          data: SliderThemeData(
-                                              trackHeight: 2,
-                                              thumbShape: RoundSliderThumbShape(
-                                                  enabledThumbRadius: 6),
-                                              overlayShape:
-                                                  RoundSliderOverlayShape(
-                                                      overlayRadius: 1),
-                                              thumbColor:
-                                                  primaryColor ?? Colors.white,
-                                              activeTrackColor:
-                                                  primaryColor ?? Colors.white,
-                                              inactiveTrackColor:
-                                                  controlsColor ?? Colors.grey),
-                                          child: Slider(
-                                            value:
-                                                controller.setVolumeValue.value,
-                                            min: 0.0,
-                                            max: 1.0,
-                                            // divisions: duration.value.inSeconds.round(),
-                                            onChanged: (double newValue) {
-                                              // position.value =
-                                              // Duration(seconds: newValue.toInt());
-                                              controller.setVolumeValue.value =
-                                                  newValue;
-                                              controller.setVolumeValue.value ==
-                                                      0
-                                                  ? controller.isMute.value =
-                                                      true
-                                                  : controller.isMute.value =
-                                                      false;
-                                              controller.setVolumeValue.value =
-                                                  newValue;
-                                              controller.controller
-                                                  .setVolume(newValue);
-                                            },
-                                            mouseCursor:
-                                                MouseCursor.uncontrolled,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 55,
-                                    height: 55,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        controller.volVisible.value =
-                                            !controller.volVisible.value;
-                                        Future.delayed(
-                                            const Duration(seconds: 5),
-                                            () => controller.volVisible.value =
-                                                false);
-                                      },
-                                      child: Obx(() => !controller.isMute.value
-                                          ? SvgPicture.asset(
-                                              "assets/icons/volume.svg",
-                                              package: "youtube_video_player",
-                                              color: controlsColor,
-                                              width: 20,
-                                              height: 20,
-                                            )
-                                          : SvgPicture.asset(
-                                              "assets/icons/mute.svg",
-                                              package: "youtube_video_player",
-                                              color: controlsColor,
-                                              width: 20,
-                                              height: 20,
-                                            )),
+                                    child: SvgPicture.asset(
+                                      "assets/icons/minimize.svg",
+                                      width: 50,
+                                      height: 50,
+                                      color: controlsColor,
+                                      package: "youtube_video_player",
                                     ),
                                   ),
                                 ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(bottom: 20),
+                              )),
+                          Align(
+                              // bottom: 16,
+                              // right: 48,
                               alignment: Alignment.bottomCenter,
-                              // height: 100,
-                              width: double.infinity,
-                              child: Container(
-                                margin: const EdgeInsets.only(
-                                    top: 45, bottom: 30, left: 20, right: 18),
-                                // child: SliderTheme(
-                                //   data: SliderThemeData(
-                                //     trackHeight: 1,
-                                //     thumbShape: RoundSliderThumbShape(
-                                //         enabledThumbRadius: 3),
-                                //     overlayShape: RoundSliderOverlayShape(
-                                //         overlayRadius: 4),
-                                //     thumbColor: primaryColor,
-                                //     activeTrackColor: primaryColor,
-                                //     inactiveTrackColor: Colors.grey,
-                                //     showValueIndicator:
-                                //         ShowValueIndicator.always,
-                                //   ),
-                                //   child: Slider(
-                                //     label: controller.formatDuration(
-                                //         controller.position.value),
-                                //     value: controller.position.value.inSeconds
-                                //         .toDouble(),
-                                //     min: 0.0,
-                                //     max: controller.duration.value.inSeconds
-                                //         .toDouble(),
-                                //     // divisions: duration.value.inSeconds.round(),
-                                //     onChanged: (double newValue) {
-                                //       // position.value =
-                                //       // Duration(seconds: newValue.toInt());
-                                //       controller.controller.seekTo(
-                                //           Duration(seconds: newValue.toInt()));
-                                //     },
-                                //     mouseCursor: MouseCursor.defer,
-                                //   ),
-                                // ),
-                                child: Obx(
-                                  () => ProgressBar(
-                                    // key: controller.mywidgetkey.value,
-                                    barHeight: 2,
-                                    baseBarColor: Colors.white,
-                                    bufferedBarColor: Colors.grey[300],
-                                    progressBarColor: primaryColor,
-                                    thumbColor: primaryColor,
-                                    thumbRadius: 5,
-                                    progress: controller.position.value,
-                                    total: controller.controller.value.duration,
-                                    // buffered: controller
-                                    //     .durationRangeToDuration(controller
-                                    //         .controller.value.buffered),
-                                    onSeek: (value) =>
-                                        controller.controller.seekTo(value),
-                                    timeLabelTextStyle: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: textColor,
-                                        fontSize: 6),
-                                    barCapShape: BarCapShape.round,
-                                    timeLabelPadding: 5,
-                                    timeLabelType: TimeLabelType.remainingTime,
-                                  ),
-                                ),
-                              ), //Progress Bar
-                            ),
-                            // Container(
-                            //     padding: EdgeInsets.only(
-                            //         top: 420, left: 25, right: 25),
-                            //     //Duration
-                            //     child: Row(
-                            //       mainAxisAlignment:
-                            //           MainAxisAlignmentaceBetween,
-                            //       children: [
-                            //         RichText(
-                            //           text: TextSpan(
-                            //             text: controller.formatDuration(
-                            //                 controller.position.value),
-                            //             style: const TextStyle(
-                            //               fontSize: 10.0,
-                            //               color: Colors.white,
-                            //               decoration: TextDecoration.none,
-                            //             ),
-                            //           ),
-                            //         ),
-                            //         Text(
-                            //           controller.formatDuration(
-                            //               controller.duration.value),
-                            //           style: const TextStyle(
-                            //             fontSize: 10.0,
-                            //             color: Colors.white,
-                            //             decoration: TextDecoration.none,
-                            //           ),
-                            //         ),
-                            //       ],
-                            //     )),
-                            //Bottom Bar Settings and Full Screen
-                            Positioned(
-                                top: 2,
-                                right: 10,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    TextButton(
-                                        onPressed: () {
-                                          _controller.lock.value =
-                                              !_controller.lock.value;
-                                          _controller.isVisible.value = false;
-                                        },
-                                        style: TextButton.styleFrom(
-                                          fixedSize: const Size(30, 30),
-                                          minimumSize: const Size(30, 30),
-                                          maximumSize: const Size(30, 30),
-                                        ),
-                                        child: SvgPicture.asset(
-                                          "assets/icons/lock.svg",
-                                          width: 30,
-                                          height: 30,
-                                          color: controlsColor,
-                                          package: "youtube_video_player",
-                                        )),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
+                                    GestureDetector(
+                                      onTap: () {
+                                        // Get.defaultDialog(content: Popup());
+                                        getBottomSheet(0, context);
                                       },
-                                      style: TextButton.styleFrom(
-                                        fixedSize: const Size(35, 35),
-                                        minimumSize: const Size(35, 35),
-                                        maximumSize: const Size(35, 35),
+                                      child: const Row(
+                                        children: [
+                                          Icon(Icons.high_quality_rounded),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          Text(
+                                            "Quality",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 8,
+                                            ),
+                                          )
+                                        ],
                                       ),
-                                      child: SvgPicture.asset(
-                                        "assets/icons/minimize.svg",
-                                        width: 50,
-                                        height: 50,
-                                        color: controlsColor,
-                                        package: "youtube_video_player",
+                                    ),
+                                    const SizedBox(
+                                      width: 16,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () => getBottomSheet(1, context),
+                                      child: const Row(
+                                        children: [
+                                          Icon(Icons.speed_rounded),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          Text(
+                                            "Playback Speed",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 8,
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ),
                                   ],
-                                )),
-                            Align(
-                                // bottom: 16,
-                                // right: 48,
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          // Get.defaultDialog(content: Popup());
-                                          getBottomSheet(0, context);
-                                        },
-                                        child: const Row(
-                                          children: [
-                                            Icon(Icons.high_quality_rounded),
-                                            SizedBox(
-                                              width: 4,
-                                            ),
-                                            Text(
-                                              "Quality",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 8,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 16,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () => getBottomSheet(1, context),
-                                        child: const Row(
-                                          children: [
-                                            Icon(Icons.speed_rounded),
-                                            SizedBox(
-                                              width: 4,
-                                            ),
-                                            Text(
-                                              "Playback Speed",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 8,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ))
-                          ],
-                        ),
+                                ),
+                              ))
+                        ],
                       ),
                     ),
-                    Visibility(
-                      visible: _controller.lock.value,
-                      child: Positioned(
-                        top: 2,
-                        right: 35,
-                        child: TextButton(
-                          onPressed: () {
-                            _controller.lock.value = !_controller.lock.value;
-                            controller.isVisible.value = false;
-                          },
-                          style: TextButton.styleFrom(
-                            fixedSize: const Size(35, 35),
-                            minimumSize: const Size(35, 35),
-                            maximumSize: const Size(35, 35),
-                          ),
-                          child: SvgPicture.asset(
-                            "assets/icons/lock-open.svg",
-                            width: 30,
-                            height: 30,
-                            package: "youtube_video_player",
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              : Center(
-                  child: CircularProgressIndicator(
-                    color: primaryColor,
                   ),
+                  Visibility(
+                    visible: _controller.lock.value,
+                    child: Positioned(
+                      top: 2,
+                      right: 35,
+                      child: TextButton(
+                        onPressed: () {
+                          _controller.lock.value = !_controller.lock.value;
+                          controller.isVisible.value = false;
+                        },
+                        style: TextButton.styleFrom(
+                          fixedSize: const Size(35, 35),
+                          minimumSize: const Size(35, 35),
+                          maximumSize: const Size(35, 35),
+                        ),
+                        child: SvgPicture.asset(
+                          "assets/icons/lock-open.svg",
+                          width: 30,
+                          height: 30,
+                          package: "youtube_video_player",
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  color: primaryColor,
                 ),
-        ),
+              ),
       ),
     );
   }
