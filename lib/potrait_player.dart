@@ -1,4 +1,3 @@
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -377,49 +376,6 @@ class PotraitPlayer extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                      ),
-                                      Container(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 15),
-                                        alignment: Alignment.bottomCenter,
-                                        // height: 220,
-                                        child: Container(
-                                          margin: const EdgeInsets.only(
-                                              top: 30,
-                                              bottom: 30,
-                                              left: 20,
-                                              right: 18),
-                                          child: Obx(
-                                            () => ProgressBar(
-                                              // key: controller.mywidgetkey.value,
-                                              barHeight: 2,
-                                              baseBarColor: Colors.white,
-                                              bufferedBarColor:
-                                                  Colors.grey[300],
-                                              progressBarColor: primaryColor,
-                                              thumbColor: primaryColor,
-                                              thumbRadius: 5,
-                                              progress:
-                                                  controller.position.value,
-                                              total: controller
-                                                  .controller.value.duration,
-                                              // buffered: controller
-                                              //     .durationRangeToDuration(controller
-                                              //         .controller.value.buffered),
-                                              onSeek: (value) => controller
-                                                  .controller
-                                                  .seekTo(value),
-                                              timeLabelTextStyle: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  color: textColor,
-                                                  fontSize: 10),
-                                              barCapShape: BarCapShape.round,
-                                              timeLabelPadding: 5,
-                                              timeLabelType:
-                                                  TimeLabelType.remainingTime,
-                                            ),
-                                          ),
-                                        ), //Progress Bar
                                       ),
                                       //Bottom Bar Settings and Full Screen
                                       Positioned(

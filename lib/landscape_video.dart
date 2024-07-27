@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -326,72 +325,6 @@ class LandscapeVideo extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            alignment: Alignment.bottomCenter,
-                            // height: 100,
-                            width: double.infinity,
-                            child: Container(
-                              margin: const EdgeInsets.only(
-                                  top: 45, bottom: 30, left: 20, right: 18),
-                              // child: SliderTheme(
-                              //   data: SliderThemeData(
-                              //     trackHeight: 1,
-                              //     thumbShape: RoundSliderThumbShape(
-                              //         enabledThumbRadius: 3),
-                              //     overlayShape: RoundSliderOverlayShape(
-                              //         overlayRadius: 4),
-                              //     thumbColor: primaryColor,
-                              //     activeTrackColor: primaryColor,
-                              //     inactiveTrackColor: Colors.grey,
-                              //     showValueIndicator:
-                              //         ShowValueIndicator.always,
-                              //   ),
-                              //   child: Slider(
-                              //     label: controller.formatDuration(
-                              //         controller.position.value),
-                              //     value: controller.position.value.inSeconds
-                              //         .toDouble(),
-                              //     min: 0.0,
-                              //     max: controller.duration.value.inSeconds
-                              //         .toDouble(),
-                              //     // divisions: duration.value.inSeconds.round(),
-                              //     onChanged: (double newValue) {
-                              //       // position.value =
-                              //       // Duration(seconds: newValue.toInt());
-                              //       controller.controller.seekTo(
-                              //           Duration(seconds: newValue.toInt()));
-                              //     },
-                              //     mouseCursor: MouseCursor.defer,
-                              //   ),
-                              // ),
-                              child: Obx(
-                                () => ProgressBar(
-                                  // key: controller.mywidgetkey.value,
-                                  barHeight: 2,
-                                  baseBarColor: Colors.white,
-                                  bufferedBarColor: Colors.grey[300],
-                                  progressBarColor: primaryColor,
-                                  thumbColor: primaryColor,
-                                  thumbRadius: 5,
-                                  progress: controller.position.value,
-                                  total: controller.controller.value.duration,
-                                  // buffered: controller
-                                  //     .durationRangeToDuration(controller
-                                  //         .controller.value.buffered),
-                                  onSeek: (value) =>
-                                      controller.controller.seekTo(value),
-                                  timeLabelTextStyle: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: textColor,
-                                      fontSize: 6),
-                                  barCapShape: BarCapShape.round,
-                                  timeLabelPadding: 5,
-                                  timeLabelType: TimeLabelType.remainingTime,
-                                ),
-                              ),
-                            ), //Progress Bar
                           ),
                           // Container(
                           //     padding: EdgeInsets.only(
